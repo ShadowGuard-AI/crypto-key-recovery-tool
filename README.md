@@ -1,7 +1,13 @@
 ![Banner](banner.png)
 
 # crypto-key-recovery-tool
-Attempts to recover cryptographic keys from memory dumps or corrupted files using common key derivation functions and known plaintext attacks. Supports common algorithms like AES and RSA, allowing for targeted key recovery attempts. - Focused on Basic cryptographic operations
+What is implemented: deriving an AES key from a password, a hex salt and
+an iteration count with PBKDF2, then decrypting a ciphertext file with
+that key in AES-CBC mode (PKCS7 unpadding) or AES-GCM mode (hex IV, tag
+and optional AAD). A failed derivation or decryption exits 1.
+What is not implemented, despite the flags existing: RSA recovery,
+memory dump processing, and the known plaintext attack. Those paths
+print a placeholder warning only; the RSA path also exits 1.
 
 ## Install
 `git clone https://github.com/ShadowStrikeHQ/crypto-key-recovery-tool`

@@ -1,6 +1,5 @@
 import argparse
 import logging
-import os
 import sys
 
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
@@ -191,14 +190,19 @@ def main():
                 logging.info("Key successfully derived using PBKDF2.")
                 if args.ciphertext_file and args.iv:
                    plaintext = aes_decrypt(args.ciphertext_file, key, args.iv, args.tag, args.tag_length, args.aad)
-                   if plaintext:
+                   if plaintext is not None:
+                       # is not None, not truthiness: an empty plaintext is
+                       # a successful decryption of an empty message, and
+                       # the old check reported it as a failure.
                        print("Decrypted plaintext:", plaintext.decode('latin-1', 'ignore'))  # Use latin-1 for broad character support
                    else:
                        logging.error("AES decryption failed.")
+                       sys.exit(1)
                 else:
                     logging.warning("Ciphertext file and IV are required for decryption after key derivation.")
             else:
                 logging.error("Key derivation failed.")
+                sys.exit(1)
         elif args.ciphertext_file and args.iv:
             # Attempt direct decryption with provided key (key needs to be pre-determined somehow, not implemented here)
             logging.warning("Direct decryption requires the key to be determined beforehand.")
@@ -207,9 +211,11 @@ def main():
             parser.error("Either --password and --salt, or --ciphertext-file and --iv are required for AES decryption.")
 
     elif args.algorithm == "RSA":
+        # Placeholder only. It logs the same either way, so do not let the
+        # trailing checks below add a misleading "no actions specified"
+        # line on top of it, and do not exit as if work had been done.
         logging.warning("RSA support is a placeholder and not yet implemented.")
-        #Implement RSA key recovery attempts here.
-        pass
+        sys.exit(1)
 
     if args.memory_dump:
         process_memory_dump(args.memory_dump)
