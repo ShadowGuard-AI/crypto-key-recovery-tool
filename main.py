@@ -200,6 +200,8 @@ def main():
                        sys.exit(1)
                 else:
                     logging.warning("Ciphertext file and IV are required for decryption after key derivation.")
+                    logging.error("No decryption was performed.")
+                    sys.exit(1)
             else:
                 logging.error("Key derivation failed.")
                 sys.exit(1)
@@ -207,6 +209,8 @@ def main():
             # Attempt direct decryption with provided key (key needs to be pre-determined somehow, not implemented here)
             logging.warning("Direct decryption requires the key to be determined beforehand.")
             logging.warning("Key should be provided via other means (e.g., memory dump analysis, not password).")
+            logging.error("No decryption was performed.")
+            sys.exit(1)
         else:
             parser.error("Either --password and --salt, or --ciphertext-file and --iv are required for AES decryption.")
 
