@@ -50,6 +50,11 @@ def derive_key_pbkdf2(password, salt_hex, iterations, key_length):
         logging.error("Invalid salt format. Must be a hexadecimal string.")
         return None
 
+    # key_length reaches this function in bytes. The bits to bytes
+    # conversion happens once, at the call in main, and the docstring
+    # above still calls it bytes while the flag itself is in bits. If
+    # that // 8 is ever dropped, derivation silently asks for an
+    # eight-times-longer key and every decryption fails.
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
         length=key_length,
@@ -95,6 +100,9 @@ def aes_decrypt(ciphertext_file, key, iv_hex, tag_hex=None, tag_length=None, aad
         logging.error("Invalid IV format. Must be a hexadecimal string.")
         return None
 
+    # The mode is never named by the user. A tag being present is the
+    # whole signal for GCM, so a CBC ciphertext handed over with a tag
+    # value goes down this path and fails here instead of in CBC below.
     if tag_hex:  # Attempt GCM mode decryption
         if not tag_length:
             logging.error("Tag length is required for GCM mode.")
@@ -118,6 +126,9 @@ def aes_decrypt(ciphertext_file, key, iv_hex, tag_hex=None, tag_length=None, aad
         try:
             cipher = Cipher(algorithms.AES(key), modes.GCM(iv, tag), backend=default_backend())
             decryptor = cipher.decryptor()
+            # Ordering matters: the library only accepts additional data
+            # before the first update() call, so this line cannot move
+            # below the decryption line without breaking GCM runs.
             if aad:
                 decryptor.authenticate_additional_data(aad)
             plaintext = decryptor.update(ciphertext) + decryptor.finalize()
@@ -135,6 +146,11 @@ def aes_decrypt(ciphertext_file, key, iv_hex, tag_hex=None, tag_length=None, aad
             plaintext = decryptor.update(ciphertext) + decryptor.finalize()
 
             # Unpad the plaintext (PKCS7)
+            # Unpadding sits inside this same try on purpose and by
+            # accident: with a wrong key, CBC decryption itself usually
+            # "succeeds" and the bad padding is the first thing that
+            # fails, so the generic error below is what a wrong key and
+            # a corrupt file both look like from outside.
             unpadder = padding.PKCS7(algorithms.AES.block_size).unpadder()
             plaintext = unpadder.update(plaintext) + unpadder.finalize()
 
@@ -194,6 +210,10 @@ def main():
                        # is not None, not truthiness: an empty plaintext is
                        # a successful decryption of an empty message, and
                        # the old check reported it as a failure.
+                       # latin-1 maps every byte to a character, so any
+                       # decrypted bytes at all can be printed. The output
+                       # is a display of the bytes, not a claim about the
+                       # encoding the plaintext was written in.
                        print("Decrypted plaintext:", plaintext.decode('latin-1', 'ignore'))  # Use latin-1 for broad character support
                    else:
                        logging.error("AES decryption failed.")
