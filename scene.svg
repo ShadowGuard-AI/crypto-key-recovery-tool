@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" role="img" aria-label="churchyard scene">
+<rect width="1200" height="300" fill="#ceccbc"/>
+<rect x="90" y="36" width="90" height="150" fill="#8e928c"/><polygon points="82,38 135,4 188,38" fill="#686c66"/>
+<circle cx="135" cy="70" r="20" fill="none" stroke="#545854" stroke-width="3"/>
+<rect x="0" y="172" width="1200" height="22" fill="#96988f"/>
+<ellipse cx="820" cy="212" rx="250" ry="26" fill="#7a664e"/>
+<rect x="796" y="104" width="13" height="112" fill="#5c4432"/><rect x="822" y="104" width="13" height="112" fill="#5c4432"/>
+<ellipse cx="816" cy="146" rx="17" ry="34" fill="#281e16"/>
+<g><animateTransform attributeName="transform" type="translate" values="0 0;0 -7;0 0" dur="11s" repeatCount="indefinite"/>
+<ellipse cx="816" cy="62" rx="290" ry="52" fill="#183a2a"/><ellipse cx="700" cy="98" rx="220" ry="40" fill="#183a2a"/><ellipse cx="940" cy="98" rx="220" ry="40" fill="#183a2a"/></g>
+<circle cx="760" cy="120" r="6" fill="#e882a5"><animate attributeName="cy" values="120;208" dur="9s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;1;0" keyTimes="0;0.9;1" dur="9s" repeatCount="indefinite"/></circle>
+<circle cx="884" cy="126" r="6" fill="#e882a5"><animate attributeName="cy" values="126;210" begin="4s" dur="9s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;1;0" keyTimes="0;0.9;1" begin="4s" dur="9s" repeatCount="indefinite"/></circle>
+<g stroke="#465c3c" stroke-width="3"><animateTransform attributeName="transform" type="translate" values="0 0;26 0;0 0" dur="11s" repeatCount="indefinite"/>
+<line x1="220" y1="272" x2="244" y2="275"/><line x1="330" y1="284" x2="354" y2="287"/><line x1="450" y1="270" x2="474" y2="273"/></g>
+<polygon points="120,300 420,232 560,232 430,300" fill="#c4bca4"/>
+</svg>
